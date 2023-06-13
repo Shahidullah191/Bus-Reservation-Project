@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 
+///This function is used to get the formatted date
 String getFormattedDate(DateTime date, {String pattern = 'dd/MM/yyyy'}) {
   return DateFormat(pattern).format(date);
 }
 
+///This function is used to show the message in the bottom
 void showMessage(String message) {
   Flushbar(
     message: message,

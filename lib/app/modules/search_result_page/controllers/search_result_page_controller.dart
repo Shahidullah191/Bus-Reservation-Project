@@ -24,14 +24,16 @@ class SearchResultPageController extends GetxController {
     if (kDebugMode) {
       print(departureDate.value);
     }
-    getSchedulesByRouteName(busRoute!.routeName);
+
     super.onInit();
   }
 
   ///This function is used to get the schedule list
   DataSource dataSource = DummyDataSource();
   RxList<BusSchedule> scheduleList = RxList<BusSchedule>([]);
-  void getSchedulesByRouteName(String routeName) async {
-    scheduleList(await dataSource.getSchedulesByRouteName(routeName));
+  getSchedulesByRouteName(String routeName) async {
+    await scheduleList(await dataSource.getSchedulesByRouteName(routeName));
+    // scheduleList.refresh();
+    update();
   }
 }

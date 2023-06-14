@@ -1,4 +1,5 @@
 import 'package:bus_reservation/app/data/utils/constants.dart';
+import 'package:bus_reservation/app/models/bus_schedule.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -25,17 +26,60 @@ class SearchResultPageView extends GetView<SearchResultPageController> {
               ),
             ),
           ),
-          Obx(
-            () => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: controller.scheduleList
-                  .map((schedule) => ListTile(
-                        title: Text(schedule.bus.busName),
-                        subtitle: Text(schedule.bus.busType),
-                        trailing: Text("$currency${schedule.ticketPrice}"),
-                      ))
-                  .toList(),
-            ),
+          GetBuilder<SearchResultPageController>(
+            initState: (_) {
+              controller
+                  .getSchedulesByRouteName(controller.busRoute!.routeName);
+              print(controller.busRoute!.routeName);
+            },
+            init: SearchResultPageController(),
+            builder: (snapshot) {
+              RxList<BusSchedule> list = snapshot.scheduleList;
+              if (list.isNotEmpty) {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: list.length,
+                  itemBuilder: (context, index) {
+                    BusSchedule schedule = list[index];
+                    return Card(
+                      child: ListTile(
+                        title: Text(
+                          schedule.bus.busName,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        subtitle: Text(
+                          schedule.bus.busType,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        trailing: Text(
+                          '$currency${schedule.ticketPrice}',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {},
+                      ),
+                    );
+                  },
+                );
+              } else if (list.isEmpty) {
+                return const Center(
+                  child: Text('Error'),
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
           ),
         ],
       ),

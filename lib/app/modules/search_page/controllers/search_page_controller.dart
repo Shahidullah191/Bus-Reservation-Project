@@ -1,6 +1,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:bus_reservation/app/data/datasource/data_source.dart';
 import 'package:bus_reservation/app/data/datasource/temp_db.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -37,18 +38,25 @@ class SearchPageController extends GetxController {
         const Duration(days: 7),
       ),
     );
-    if (selectedDate != null && selectedDate != departureDate?.value) {
-      departureDate?.value = selectedDate;
+    if (selectedDate != null && selectedDate != departureDate.value) {
+      departureDate.value = selectedDate;
       update();
     }
   }
 
   ///This function is used to search the route
   void search() {
+    if (departureDate == temp) {
+      showMessage("Please select departure date");
+      return;
+    }
+
     if (formKey.currentState!.validate()) {
       getRouteByCityFromAndCityTo(formCity!, toCity!).then((route) {
         if (route != null) {
-          print(route.cityFrom);
+          if (kDebugMode) {
+            print(route.cityFrom);
+          }
           Get.toNamed(Routes.SEARCH_RESULT_PAGE,
               arguments: [route, getFormattedDate(departureDate.value)]);
         } else {
@@ -57,11 +65,6 @@ class SearchPageController extends GetxController {
       });
     } else {
       showMessage("Please select departure date");
-    }
-
-    if (departureDate == temp) {
-      showMessage("Please select departure date");
-      return;
     }
   }
 

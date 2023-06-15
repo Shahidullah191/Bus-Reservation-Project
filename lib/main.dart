@@ -15,7 +15,6 @@ void main() {
         primarySwatch: Colors.lightGreen,
         brightness: Brightness.dark,
       ),
-
     ),
   );
 }
